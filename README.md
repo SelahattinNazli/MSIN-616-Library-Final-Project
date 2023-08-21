@@ -34,6 +34,8 @@ This is a simple database that can be used to maintain the data stored and proce
 - The library has a list of overdue charges.  The charges are currently .05 each day for juvenile books and .10 per day for adult books.  When a book is returned late the borrower pays charges that are in effect at the time the book is returned.
 - A borrower can acknowledge that he has lost a copy of a book.  If so, the copy is marked LOST and the book’s cost is added to the card balance.   Eventually the copy may be removed from the current inventory of branch copies and stored in a history file.
 
+
+```sql
 CREATE DATABASE Pub_Library
 
 USE Pub_Library
@@ -52,8 +54,9 @@ CREATE TABLE AUTHORS(
 Constraint[PK_AUTHORS] primary key (Author_id)
 )
 ALTER TABLE Authors ALTER COLUMN Author_Phone varchar(15)
+```
 
-
+```sql
 CREATE TABLE Publishers(
                  Publisher_id int not null,
 				 Publisher_Name varchar(40) not null,
@@ -66,32 +69,42 @@ Constraint[PK_PUBLISHERS] primary key (Publisher_id)
 )
 
 ALTER TABLE Publishers ADD Phone char(10)
+```
 
+```sql
 CREATE TABLE Categories(
                  Category_id int not null,
 				 Category_Type varchar(15)
 Constraint [PK_CATEGORIES] primary key (Category_id)
 )
+```
 
+```sql
 CREATE TABLE EmpDegrees(
                  Degree_id int not null,
 				 Degree_Name varchar(20)
 Constraint [PK_EMPDEGREES] primary key (Degree_id)
 )
+```
 
+```sql
 CREATE TABLE Schools(
                  School_id int not null,
 				 Schhol_Name varchar(25)
 Constraint [PK_SCHOOLS] primary key (School_id)
 )
 ALTER TABLE Schools ALTER COLUMN Schhol_Name varchar(100)
+```
 
+```sql
 CREATE TABLE Employee_Type(
                  EmpType_id int not null,
 				 EmpType_Name varchar(25)
 Constraint [PK_EMPLOYEETYPE] primary key (EmpType_id)
 )
+```
 
+```sql
 CREATE TABLE Branches(
                  Branch_id int not null,
 				 [Name] varchar(25) not null,
@@ -100,7 +113,9 @@ CREATE TABLE Branches(
 				 Fax char(10)
 Constraint [PK_BRANCHES] primary key (Branch_id)
 )
+```
 
+```sql
 CREATE TABLE Employees(
                 Employee_id int not null,
 				Degree_id int not null,
@@ -130,7 +145,9 @@ ALTER TABLE Employees ALTER COLUMN Salary_Type varchar(10)
 EXEC sp_rename 'Employees.Vacation_Hours','Vacation_Time','COLUMN'
 ALTER TABLE Employees ADD CONSTRAINT [CHK_EMPLOYEES5] CHECK (Salary_Type IN ('Salaried','Hourly'))
 ALTER TABLE Employees ADD CONSTRAINT [CHK_EMPLOYEES6] CHECK (Vacation_Time>=14)
+```
 
+```sql
 CREATE TABLE Shift_Logins(
                 Login_id int not null,
 				Employee_id int not null,
@@ -139,7 +156,9 @@ CREATE TABLE Shift_Logins(
 Constraint [PK_SHIFT_LOGINS] primary key (Login_id),
 Constraint [FK_SHIFT_LOGINS1] foreign key (Employee_id) references Employees(Employee_id)
 )
+```
 
+```sql
 CREATE TABLE Borrowers(
                 Borrower_id int not null,
 				First_Name varchar(15) not null,
@@ -158,7 +177,9 @@ Constraint [PK_BORROWERS] primary key (Borrower_id),
 Constraint [UIX_BORROWES1] unique (SSN)
 )
 ALTER TABLE Borrowers ADD Birthdate date
+```
 
+```sql
 CREATE TABLE Books(
                Book_id int not null,
 			   Publisher_id int not null,
@@ -170,7 +191,9 @@ Constraint [PK_BOOKS] primary key (Book_id),
 Constraint [FK_BOOKS1] foreign key (Publisher_id) references Publishers(Publisher_id),
 Constraint [UIX_BOOKS1] unique (ISBN)
 )
+```
 
+```sql
 CREATE TABLE BookCopies(
                Copy_id int not null,
                Book_id int not null,
@@ -185,8 +208,9 @@ ALTER TABLE BookCopies DROP CONSTRAINT [CHK_CONDITION5]
 ALTER TABLE BookCopies ADD CONSTRAINT [CHK_CONDITION6] CHECK (Condition IN ('New','Excellent','Good','Worn','Poor','Lost'))
 ALTER TABLE BookCopies ADD Is_Active tinyint
 ALTER TABLE BookCopies ALTER COLUMN Book_id varchar (255)
+```
 
-
+```sql
 CREATE TABLE Books_Borrowed(
                Borrowed_id int not null,
 			   Borrower_id int not null,
@@ -202,7 +226,9 @@ Constraint [UIX_BOOKSBR1] unique (Card_id)
 )
 ALTER TABLE Books_Borrowed ADD Is_Returned tinyint
 ALTER TABLE Books_Borrowed DROP CONSTRAINT [UIX_BOOKSBR1]
+```
 
+```sql
 CREATE TABLE Authors_Books(
               Author_id int not null,
 			  Book_id int not null
@@ -210,14 +236,16 @@ Constraint [PK_AUTHORBOOKS] primary key (Author_id,Book_id),
 Constraint [FK_AUTHORBOOKS1] foreign key (Author_id) references Authors(Author_id),
 Constraint [FK_BUILDOWNERS] foreign key (Book_id) references Books(Book_id)
 )
+```
 
+```sql
 CREATE TABLE Categories_Books(
              Category_id int not null,
 			 Book_id int not null
 Constraint [PK_CATEGBOOKS] primary key (Category_id,Book_id),
 Constraint [FK_CATEGBOOKS1] foreign key (Category_id) references Categories(Category_id),
 Constraint [FK_CATEGBOOKS2] foreign key (Book_id) references Books(Book_id)
-
+```
 
 ## Stored Procedures
 
