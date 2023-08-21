@@ -300,9 +300,11 @@ EXEC Usp_LogHours 15,43
 ```sql
 EXEC Usp_LogHours 15,23
 ```
---The stored Procedure that will extra charge if somebody return their readings after than it's due_date.
 
+### Stored Procedure 5
+- The stored Procedure that will extra charge if somebody return their readings after than it's due_date.
 
+```sql
 CREATE PROCEDURE Usp_ExtraCharge
    @Borrower_id AS INT,
    @copy_id AS INT,
@@ -354,16 +356,19 @@ BEGIN
         PRINT(ERROR_MESSAGE())
     END CATCH
 END
+```
 
+### Test Cases of Stored Procedure 5
+- If there is no book with the given information
 
-
---Test Cases
---1) If there is no book with the given information
+```sql
 EXEC Usp_ExtraCharge 5,204,30,'2022-05-08','2022-05-30'
+```
+- If there is a book,copy_id,card_id with given information
 
-
---2) If there is a book,copy_id,card_id with given information
+```sql
 EXEC Usp_ExtraCharge 8,204,8,'2022-05-08', '2022-06-30'
+```
 
 ## Library Queries
 
