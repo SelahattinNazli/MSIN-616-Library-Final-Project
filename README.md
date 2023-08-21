@@ -165,14 +165,15 @@ VALUES (67,3,2,10,1,'Alice','Meyer','Haberst Av', '1984-08-08', '2019-04-19', 50
 INSERT INTO Employees 
 VALUES (67,2,2,10,1,'Alice','Meyer','Haberst Av', '1984-08-08', '2019-04-19', 60000.00, 456432589,1,'2014-06-07',542134732,'Salaried',14)
 ```
-    Rules for borrowing a book:
+
+### Stored Procedure 2
+- Rules for borrowing a book:
     - Any reading item that is categorized as reference may not be borrowed.
     - Copies that are in POOR condition may not be borrowed.
     - When a book copy is borrowed, the copy is marked as BORROWED. BORROWED copies may not be borrowed.
     - A borrower can not use a card to borrow books, if he owes more than 10 dollars on that card.
 
-*/
-
+```sql
 CREATE PROCEDURE USP_BorrowBook
     @copy_id AS INT,
     @card_id AS INT
@@ -244,26 +245,39 @@ BEGIN
         PRINT(ERROR_MESSAGE())
     END CATCH
 END
+```
+### Test Cases of Stored Procedure 2
+- If copy of type is category='Reference'
 
-
---Test Cases
-
---1) If copy of type is category='Reference'
+```sql
 EXEC Usp_BorrowBook 207,17
+```
 
---2) If the Copy of Book in Poor Condition 
+- If the Copy of Book in Poor Condition
+
+```sql  
 EXEC Usp_BorrowBook 218,18
+```
 
---3) If Copies That are Discarded or Already Borrowed. (In this example this book already borrowed to another person)
+- If Copies That are Discarded or Already Borrowed. (In this example this book already borrowed to another person)
+
+```sql
 EXEC USP_BorrowBook 219,9
+```
 
---4)  If a Borrower owes over 10$. (In this example the borrower has 18$ owe)
+- If a Borrower owes over 10$. (In this example the borrower has 18$ owe)
+
+```sql
 EXEC Usp_BorrowBook 212,12
+```
 
---5) Succesfully Borrowed 
+- Succesfully Borrowed
+
+```sql
 EXEC Usp_BorrowBook 214,14
+```
 
-### Stored Procedure 2
+### Stored Procedure 3
 - Stored procedure of annual vacation time by each employee's length of service.
 
 ```sql
@@ -283,7 +297,7 @@ END
 
 EXEC Usp_EmployeeVacationTime
 ```
-### Stored Procedure 3
+### Stored Procedure 4
 - The Stored Procedure that about what will happen when a book get lost.
 
 ```sql
@@ -319,7 +333,7 @@ BEGIN
     END CATCH
 END
 ```
-### Test Conditions of Stored Procedure 3
+### Test Conditions of Stored Procedure 4
 
 - If there is no book under that conditions, the procedure will throw exception
 
@@ -333,7 +347,7 @@ EXEC USP_LostBook 208,5,7
 EXEC USP_LostBook 209,2,2
 ```
 
-### Stored Procedure 4
+### Stored Procedure 5
 - The stored procedured that will check if log information provide the given criterias.
 - Workers who log hours can’t log more than 40 hours per week
 
@@ -380,7 +394,7 @@ BEGIN
 END
 ```
 
-### Test Cases of Stored Procedure 4
+### Test Cases of Stored Procedure 5
 - If there is no book with the given information
 
 ```sql
@@ -399,7 +413,7 @@ EXEC Usp_LogHours 15,43
 EXEC Usp_LogHours 15,23
 ```
 
-### Stored Procedure 5
+### Stored Procedure 6
 - The stored Procedure that will extra charge if somebody return their readings after than it's due_date.
 
 ```sql
@@ -456,7 +470,7 @@ BEGIN
 END
 ```
 
-### Test Cases of Stored Procedure 5
+### Test Cases of Stored Procedure 6
 - If there is no book with the given information
 
 ```sql
@@ -468,7 +482,7 @@ EXEC Usp_ExtraCharge 5,204,30,'2022-05-08','2022-05-30'
 EXEC Usp_ExtraCharge 8,204,8,'2022-05-08', '2022-06-30'
 ```
 
-### Stored Procedure 6
+### Stored Procedure 7
 - The Stored Procedure for Discarding Book in Poor Condition
 
 ```sql
@@ -499,7 +513,7 @@ BEGIN
 END
 ```
 
-### Test Cases of Stored Procedure 6
+### Test Cases of Stored Procedure 7
 - If the copy_id that has been looked for does not exist in the BookCopies table
 
 ```sql
@@ -518,7 +532,7 @@ EXEC Usp_DiscardBook 214
 EXEC Usp_DiscardBook 205
 ```
 
-### Stored Procedure 7
+### Stored Procedure 8
 - Stored procedure about Each Borrower's Card Expiration Date
 
 ```sql
@@ -535,7 +549,7 @@ AS
 END
 ```
 
-### Stored Procedure 8
+### Stored Procedure 9
 - Rules for creating a card for borrower
     - A person can have only one valid library card at a given time.
     - A person can’t be issued a new library card, if he owes money on an expired card.
@@ -577,7 +591,7 @@ END
 ```
 
 
-### Test Cases of Stored Procedure 8
+### Test Cases of Stored Procedure 9
 - If the person who wants to borrow book has already active card.
 
 ```sql
