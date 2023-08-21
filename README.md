@@ -420,8 +420,10 @@ EXEC Usp_DiscardBook 214
 EXEC Usp_DiscardBook 205
 ```
 
---1) Stored procedure about Each Borrower's Card Expiration Date
+### Stored Procedure 7
+- Stored procedure about Each Borrower's Card Expiration Date
 
+```sql
 CREATE PROCEDURE Usp_CardExpire
 AS
   BEGIN 
@@ -433,6 +435,7 @@ AS
 						END
 	FROM Borrowers
 END
+```
 
 ## Library Queries
 
