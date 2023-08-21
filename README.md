@@ -437,7 +437,7 @@ AS
 END
 ```
 
-### Stored procedure 8
+### Stored Procedure 8
 - Rules for creating a card for borrower
     - A person can have only one valid library card at a given time.
     - A person can’t be issued a new library card, if he owes money on an expired card.
@@ -479,7 +479,7 @@ END
 ```
 
 
-### Test Cases of Stored procedure 8
+### Test Cases of Stored Procedure 8
 - If the person who wants to borrow book has already active card.
 
 ```sql
