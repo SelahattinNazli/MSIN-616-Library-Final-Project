@@ -234,6 +234,70 @@ EXEC USP_LostBook 208,5,7
 ```sql
 EXEC USP_LostBook 209,2,2
 ```
+  The stored procedured that will check if log information provide the given criterias.
+  
+     - Workers who log hours can’t log more than 40 hours per week
+
+*/
+
+
+CREATE PROCEDURE Usp_LogHours
+   @Employee_id AS INT,
+   @Hours AS INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+	BEGIN TRY
+        BEGIN TRANSACTION
+            -- Check if the given employee exists
+            IF NOT EXISTS(SELECT TOP 1 1 FROM Employees WHERE Employee_id = @Employee_id )
+            BEGIN
+		;THROW 50001, 'There is no employee with the given details.', 1 
+		
+            END
+
+			--Check if the workers work hours
+			IF (@Hours>40)
+			BEGIN
+      ;THROW 50032, 'An employee can not log more than 40 hours.', 1 
+	        END
+
+			DECLARE @Login_id  INT =   (SELECT MAX(Login_id) + 1 FROM Shift_Logins)
+		   --Insert new record
+			INSERT INTO Shift_Logins 
+		    VALUES (
+					ISNULL( @Login_id,1),
+				    @Employee_id,
+				    @Hours,
+					GETDATE()
+				   )
+        
+            PRINT('New Log Information Has Been Added.')
+		COMMIT TRANSACTION
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRANSACTION
+        PRINT('An Error Occured During The Transaction. Error SP: ' + ERROR_PROCEDURE() + 'Error line: ' + CAST(ERROR_LINE() AS VARCHAR))
+        PRINT(ERROR_MESSAGE())
+    END CATCH
+END
+
+
+--Test Cases
+
+
+--1) If there is no book with the given information
+
+        EXEC Usp_LogHours 56,34
+
+--2) If we want to add log information who has log more than 40 hours
+
+       EXEC Usp_LogHours 15,43
+
+
+--3) If the perosn who wants to login provide all criterias.
+
+      EXEC Usp_LogHours 15,23
 
 ## Library Queries
 
