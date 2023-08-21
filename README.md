@@ -369,6 +369,51 @@ EXEC Usp_ExtraCharge 5,204,30,'2022-05-08','2022-05-30'
 ```sql
 EXEC Usp_ExtraCharge 8,204,8,'2022-05-08', '2022-06-30'
 ```
+--The Stored Procedure for Discarding Book in Poor Condition
+
+
+CREATE PROCEDURE Usp_DiscardBook
+    @copy_id INT
+AS 
+BEGIN 
+    -- Check if copy_id is valid
+    IF NOT EXISTS(SELECT TOP 1 1 FROM bookcopies WHERE copy_id = @copy_id)
+        BEGIN 
+	    ;THROW 50021, 'Book copy with provided ID does not exist.', 1 
+        END 
+
+    -- Check if book is returned
+    IF EXISTS(SELECT TOP 1 1 FROM bookcopies WHERE copy_id = @copy_id AND Is_Available = 0)
+        BEGIN 
+	    ;THROW 50022, 'Book copy with provided ID has not been returned.', 1 
+        END 
+
+    -- Check if book has not been discarded
+    IF EXISTS(SELECT TOP 1 1 FROM bookcopies WHERE copy_id = @copy_id AND Is_Active = 0 )
+        BEGIN 
+	    ;THROW 50023, 'Book copy with provided ID has been already discarded.', 1 
+	    
+        END  
+
+    UPDATE bookcopies SET Is_Available = 0, Is_Active = 0, condition = 'POOR' WHERE copy_id = @copy_id  
+END
+
+
+
+--Test Cases
+
+--1) If the copy_id that has been looked for does not exist in the BookCopies table
+
+EXEC Usp_DiscardBook 250
+
+--2) If the copy_id that has been looked for exist but it hasn't returned yet.
+
+EXEC Usp_DiscardBook 214
+
+--3) If the copy_id that has been looked for exist but it hasn't discarded yet.
+
+EXEC Usp_DiscardBook 205
+
 
 ## Library Queries
 
