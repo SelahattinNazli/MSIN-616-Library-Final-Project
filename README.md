@@ -185,9 +185,10 @@ END
 
 EXEC Usp_EmployeeVacationTime
 ```
---The Stored Procedure that about what will happen when a book get lost.
+### Stored Procedure 3
+- The Stored Procedure that about what will happen when a book get lost.
 
-
+```sql
 CREATE PROCEDURE Usp_LostBook
   @copy_id AS INT,
   @card_id AS INT,
@@ -219,17 +220,20 @@ BEGIN
         PRINT(ERROR_MESSAGE())
     END CATCH
 END
+```
+### Test Conditions of Stored Procedure 3
 
---Test Conditions
+- If there is no book under that conditions, the procedure will throw exception
 
---1) If there is no book under that conditions, the procedure will throw exception
-
+```sql
 EXEC USP_LostBook 208,5,7
+```
 
+- If we have book under that conditions, the procedure will help us update our book's condition as a 'Lost'
 
---2)If we have book under that conditions, the procedure will help us update our book's condition as a 'Lost'
-
+```sql
 EXEC USP_LostBook 209,2,2
+```
 
 ## Library Queries
 
