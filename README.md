@@ -436,6 +436,61 @@ AS
 	FROM Borrowers
 END
 ```
+Rules for creating a card for borrower
+    - A person can have only one valid library card at a given time.
+    - A person can’t be issued a new library card, if he owes money on an expired card.
+    - a person can not be younger than 10.
+
+*/
+
+CREATE PROCEDURE Usp_Borrower
+     @borrower_id INT
+    ,@fname VARCHAR(15)
+    ,@lname VARCHAR(20)
+    ,@birthdate DATE
+AS
+BEGIN
+    BEGIN TRY
+        -- Check if borrower has an active card  
+        IF EXISTS (SELECT TOP 1 1 FROM borrowers WHERE Borrower_id = @borrower_id AND Is_Expired = 0)
+            BEGIN  
+                ;THROW 50001, 'A person already has an active card.', 1
+            END
+
+         -- Check if borrower has an a balancedue on expired card 
+        IF EXISTS (SELECT TOP 1 1 FROM borrowers WHERE Borrower_id = @borrower_id AND Is_Expired = 1 AND Balance_Due > 0)
+            BEGIN 
+                ;THROW 50002, 'A person owes library from previous card.', 1
+            END
+
+        -- Check if borrower is older than 10
+        DECLARE @age INT = DATEDIFF(YEAR,@birthdate,GETDATE())
+        IF(@age < 10)
+            BEGIN 
+                ;THROW 50003, 'Borrower can not be younger than 10.', 1 
+            END
+    END TRY 
+    BEGIN CATCH
+        PRINT('An Error Occured During The Transaction. Error SP: ' + ERROR_PROCEDURE() + 'Error line: ' + CAST(ERROR_LINE() AS VARCHAR))
+        PRINT(ERROR_MESSAGE())
+    END CATCH 
+END
+
+
+
+--Test Cases
+
+--1) If the person who wants to borrow book has already active card.
+
+EXEC Usp_Borrower 1,'Victoria','Carlson','2007-05-01'
+
+--2) If the person who wants to borrow book has already owe from previous card.
+
+EXEC Usp_Borrower 20,'Amanda','Pandora','1985-05-02'
+
+--3) If the person who wants to borrow book is younger than 10.
+
+EXEC Usp_Borrower 22,'Alexa','Perish','2017-05-02'
 
 ## Library Queries
 
