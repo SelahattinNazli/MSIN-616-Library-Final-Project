@@ -35,7 +35,130 @@ This is a simple database that can be used to maintain the data stored and proce
 - A borrower can acknowledge that he has lost a copy of a book.  If so, the copy is marked LOST and the book’s cost is added to the card balance.   Eventually the copy may be removed from the current inventory of branch copies and stored in a history file.
 
 
+/*
+a.	A librarian can’t be hired before he has earned a MS in Library Science degree.
+b.	A new card can’t be issued for someone who owes money on an existing card
+c.	A new card can’t be issued for someone who has a card that hasn’t yet expired
 
+*/
+
+CREATE TRIGGER   CheckEmployees
+ON Employees
+INSTEAD OF INSERT
+AS
+BEGIN
+    DECLARE @branchId INT = (SELECT branch_id FROM inserted)
+    DECLARE @isHead BIT = (SELECT Is_Head_Librarian FROM inserted)
+    DECLARE @empTypeId INT = (SELECT EmpType_id FROM inserted)
+    DECLARE @salaryType VARCHAR(10) = (SELECT salary_type FROM inserted)
+    DECLARE @salary DECIMAL(8,2) = (SELECT salary FROM inserted)
+    DECLARE @degreeid INT = (SELECT degree_id FROM inserted)
+    -- phone can be used as unique identifier
+    DECLARE @phone VARCHAR(12) = (SELECT Cell_Phone FROM inserted)
+
+    
+    IF(@isHead = 1)
+    BEGIN 
+        -- Check if head librarian exists for the branch
+        IF EXISTS(SELECT TOP 1 1 FROM employees WHERE branch_id = @branchId AND Is_Head_Librarian = 1)
+        BEGIN
+            ;THROW 50006,'There is already a head librarian on this branch',1
+            ROLLBACK
+        END
+
+        -- Check if employee is of type librarian
+        IF(@empTypeId <> 1)
+            BEGIN
+                ;THROW 50007,'Only librarians can be head librarian',1
+                ROLLBACK
+            END
+    END
+    
+    -- Check if librarian exists
+    IF EXISTS(SELECT TOP 1 1 FROM employees WHERE Cell_Phone = @phone )
+        BEGIN
+            ;THROW 50008,'Employee is already assigned to', 1
+            ROLLBACK
+        END
+
+    -- Check if librarian exists
+    IF(@salaryType = 'Hourly' AND @salary < 15)
+        BEGIN
+            ;THROW 50009,'Minimum hourly pay for clerical employees must be greater than 15 dollars.', 1
+            ROLLBACK
+        END
+    
+    IF(@empTypeId = 1 AND (@salary < 20000 OR @salary > 70000))
+        BEGIN
+            ;THROW 50010, 'Salary for librarians must be between 20000 and 70000', 1
+            ROLLBACK
+        END
+    
+    IF(@empTypeId = 1 AND @degreeid <> 2)
+        BEGIN
+            ;THROW 50011, 'Librarian must have earned MS degree in Library Sciences.', 1
+            ROLLBACK
+        END
+
+    PRINT('Employee has been sucessfully added.')
+END
+
+
+
+GO
+ALTER TABLE employees ENABLE TRIGGER CheckEmployees
+
+
+
+
+--Test Cases
+
+--1) If we want to add a new 'head librarian' record to the branch that has already exist a 'head librarian'.
+
+
+INSERT INTO Employees 
+VALUES (67,2,2,1,1,'Alice','Meyer','Haberst Av', '1984-08-08', '2019-04-19', 50000.00, 456432589,1,'2014-06-07',542134732,'Salaried',14)
+
+
+--2) If we want to add a new 'head librarian' record that NOT the employee type is 'Librarian'.
+--   (In this example, what I try to insert type of employee is Computer Programmer)
+
+INSERT INTO Employees 
+VALUES (67,2,2,10,3,'Alice','Meyer','Haberst Av', '1984-08-08', '2019-04-19', 50000.00, 456432589,1,'2014-06-07',542134732,'Salaried',14)
+
+--3) If we want to add a new record that already exist in the table
+
+INSERT INTO Employees 
+VALUES (1,1,1,1,1,'Tammy','Williams','7072 Meadow Lane', '1973-08-04', '2015-01-20', 70000.00, 963434339,0,'2012-04-09',925667082,'Salaried',14)
+
+
+--4) If we want to add a new record that been clerical employee but hourly pay is less than 15 dollars.
+--   (In this example hourly salary adjusted as 13$ per hour)
+
+
+INSERT INTO Employees 
+VALUES (67,3,8,2,1,'Tamar','Gomes','7073 Meadow Lane', '1977-08-04', '2015-01-21', 13.00, 963434367,0,'2012-05-09',925367082,'Hourly',14)
+
+
+--5) If we want to add a new record that who is librarian but salary of him/her NOT between 20000 and 70000'
+-- (In this example, the salary of librarian is 80,000$)
+
+INSERT INTO Employees 
+VALUES (67,2,2,10,1,'Alice','Meyer','Haberst Av', '1984-08-08', '2019-04-19', 80000.00, 456432589,1,'2014-06-07',542134732,'Salaried',14)
+
+
+--6) If we want to add a new 'librarian' record that NOT the degree of employee is 'MS degree in Library Sciences.'
+--(In this example , what I try to insert type of employee has 'Online Education' degree)
+
+INSERT INTO Employees 
+VALUES (67,3,2,10,1,'Alice','Meyer','Haberst Av', '1984-08-08', '2019-04-19', 50000.00, 456432589,1,'2014-06-07',542134732,'Salaried',14)
+
+
+--7) If we want to add a new record that matching all the criterias.
+
+
+INSERT INTO Employees 
+VALUES (67,2,2,10,1,'Alice','Meyer','Haberst Av', '1984-08-08', '2019-04-19', 60000.00, 456432589,1,'2014-06-07',542134732,'Salaried',14)
 
 ## Library Queries
 
