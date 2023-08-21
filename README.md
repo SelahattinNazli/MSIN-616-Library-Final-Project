@@ -165,6 +165,104 @@ VALUES (67,3,2,10,1,'Alice','Meyer','Haberst Av', '1984-08-08', '2019-04-19', 50
 INSERT INTO Employees 
 VALUES (67,2,2,10,1,'Alice','Meyer','Haberst Av', '1984-08-08', '2019-04-19', 60000.00, 456432589,1,'2014-06-07',542134732,'Salaried',14)
 ```
+    Rules for borrowing a book:
+    - Any reading item that is categorized as reference may not be borrowed.
+    - Copies that are in POOR condition may not be borrowed.
+    - When a book copy is borrowed, the copy is marked as BORROWED. BORROWED copies may not be borrowed.
+    - A borrower can not use a card to borrow books, if he owes more than 10 dollars on that card.
+
+*/
+
+CREATE PROCEDURE USP_BorrowBook
+    @copy_id AS INT,
+    @card_id AS INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRY
+        BEGIN TRANSACTION
+            --Check if copy is of type Reference
+                IF EXISTS(
+                    SELECT TOP 1 1 
+                    FROM Categories_Books CB
+                    INNER JOIN BookCopies BC ON bc.Book_id = CB.Book_id
+                    WHERE BC.copy_id = @copy_id AND CB.Category_id = (SELECT Category_id FROM Categories C
+					                                                    WHERE Category_Type = 'Reference')
+                )
+                    BEGIN
+                        ;THROW 50001, 'Copy of type Reference can not be borrowed', 1 
+                    END
+            --Check if copy is in POOR 
+                IF EXISTS (
+                    SELECT copy_id
+                    FROM bookcopies 
+                    WHERE condition = 'POOR' AND copy_id = @copy_id
+                )
+                    BEGIN
+                        ;THROW 50002, 'Copies in POOR condition can not be borrowed', 1  
+                    END
+            --Check if copy is BORROWED or Discarded
+                IF EXISTS (
+                    SELECT copy_id
+                    FROM BookCopies 
+                    WHERE Is_Available = 0 AND copy_id = @copy_id
+                )
+                    BEGIN
+                        ;THROW 50003, 'Copies that are Discarded or already Borrowed can not be borrowed.', 1  
+                    END
+            --Check if borrower is available to borrow a book
+                IF EXISTS (
+                    SELECT * 
+                    FROM borrowers 
+                    WHERE card_id = @card_id AND (Is_Expired = 1 OR Balance_Due >= 10)
+                )
+                    BEGIN
+                        ;THROW 50004, 'Either borrowers card expired or borrower owes over 10 dollars.', 1
+                    END
+			
+            DECLARE @Borrower_id INT= @Card_id
+            UPDATE bookcopies SET Is_Available = 0 WHERE copy_id = @copy_id
+            DECLARE @Borrowed_id INT = (SELECT MAX(Borrowed_id) + 1 FROM books_borrowed)
+            INSERT INTO books_borrowed 
+            VALUES 
+            (
+                ISNULL(@Borrowed_id,1),
+				@Borrower_id,
+                @copy_id,
+                GETDATE(),
+                DATEADD(DAY,14,GETDATE()),
+				NULL,
+				@card_id,
+                0
+            )
+            PRINT('Book Has Been Sucessfully Borrowed')
+        COMMIT TRANSACTION
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRANSACTION
+        PRINT('An Error Occured During The Transaction. Error SP: ' + ERROR_PROCEDURE() + 'Error line: ' + CAST(ERROR_LINE() AS VARCHAR))
+        PRINT(ERROR_MESSAGE())
+    END CATCH
+END
+
+
+--Test Cases
+
+--1) If copy of type is category='Reference'
+EXEC Usp_BorrowBook 207,17
+
+--2) If the Copy of Book in Poor Condition 
+EXEC Usp_BorrowBook 218,18
+
+--3) If Copies That are Discarded or Already Borrowed. (In this example this book already borrowed to another person)
+EXEC USP_BorrowBook 219,9
+
+--4)  If a Borrower owes over 10$. (In this example the borrower has 18$ owe)
+EXEC Usp_BorrowBook 212,12
+
+--5) Succesfully Borrowed 
+EXEC Usp_BorrowBook 214,14
+
 ### Stored Procedure 2
 - Stored procedure of annual vacation time by each employee's length of service.
 
