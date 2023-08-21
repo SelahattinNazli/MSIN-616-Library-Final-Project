@@ -436,13 +436,14 @@ AS
 	FROM Borrowers
 END
 ```
-Rules for creating a card for borrower
+
+### Stored procedure 8
+- Rules for creating a card for borrower
     - A person can have only one valid library card at a given time.
     - A person can’t be issued a new library card, if he owes money on an expired card.
     - a person can not be younger than 10.
 
-*/
-
+```sql
 CREATE PROCEDURE Usp_Borrower
      @borrower_id INT
     ,@fname VARCHAR(15)
@@ -475,22 +476,27 @@ BEGIN
         PRINT(ERROR_MESSAGE())
     END CATCH 
 END
+```
 
 
+### Test Cases of Stored procedure 8
+- If the person who wants to borrow book has already active card.
 
---Test Cases
-
---1) If the person who wants to borrow book has already active card.
-
+```sql
 EXEC Usp_Borrower 1,'Victoria','Carlson','2007-05-01'
+```
 
---2) If the person who wants to borrow book has already owe from previous card.
+- If the person who wants to borrow book has already owe from previous card.
 
+```sql
 EXEC Usp_Borrower 20,'Amanda','Pandora','1985-05-02'
+```
 
---3) If the person who wants to borrow book is younger than 10.
+- If the person who wants to borrow book is younger than 10.
 
+```sql
 EXEC Usp_Borrower 22,'Alexa','Perish','2017-05-02'
+```
 
 ## Library Queries
 
