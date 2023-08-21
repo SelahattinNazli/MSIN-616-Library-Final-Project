@@ -185,6 +185,51 @@ END
 
 EXEC Usp_EmployeeVacationTime
 ```
+--The Stored Procedure that about what will happen when a book get lost.
+
+
+CREATE PROCEDURE Usp_LostBook
+  @copy_id AS INT,
+  @card_id AS INT,
+  @Borrowed_id AS INT 
+AS
+BEGIN
+    SET NOCOUNT ON;
+	BEGIN TRY
+        BEGIN TRANSACTION
+            -- Check borrowed book exists
+            IF NOT EXISTS(SELECT TOP 1 1 FROM books_borrowed WHERE card_id = @card_id AND copy_id = @copy_id AND is_Returned = 0)
+            BEGIN
+		;THROW 50001, 'There is no borrowed book with the given details.', 1
+            END
+
+			BEGIN  
+
+		    UPDATE books_borrowed SET Is_Returned = 1, returned_date = GETDATE() WHERE Borrowed_id = @Borrowed_id
+            -- Set condition to LOST
+            UPDATE bookcopies SET condition = 'Lost',is_available = 0 WHERE copy_id = @copy_id
+            END
+            PRINT('Book Has Been Sucessfully discarded as LOST.')
+		
+        COMMIT TRANSACTION
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRANSACTION
+        PRINT('An Error Occured During The Transaction. Error SP: ' + ERROR_PROCEDURE() + 'Error line: ' + CAST(ERROR_LINE() AS VARCHAR))
+        PRINT(ERROR_MESSAGE())
+    END CATCH
+END
+
+--Test Conditions
+
+--1) If there is no book under that conditions, the procedure will throw exception
+
+EXEC USP_LostBook 208,5,7
+
+
+--2)If we have book under that conditions, the procedure will help us update our book's condition as a 'Lost'
+
+EXEC USP_LostBook 209,2,2
 
 ## Library Queries
 
