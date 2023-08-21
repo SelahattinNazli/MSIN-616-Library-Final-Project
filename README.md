@@ -5,6 +5,34 @@
 This is a simple database that can be used to maintain the data stored and processed by a lending library. In this database, it is aimed to create a real data library database with all its features.
 
 
+## Descriptive Information About Database	
+- The library categorizes the books it has.  Typical categories might be: fiction, historical fiction, mystery, science fiction, juvenile, reference, adult.  A book might have more than one category. For example, it might be juvenile and fiction.
+- Any reading item that is categorized as reference may not be borrowed.
+- For each book, the library stores the isbn, title, publisher, category type, author(s), cost
+- A book can have more than one author
+- An author can write more than one book
+- A publisher can publish more than one book
+- The library stores publisher data such as Publisher Name, Address, Phone Number, Contact Person
+- There are several branches within this lending library system.  For each branch store the branch id, name, address, telephone number, fax number, head librarian
+- A branch might employ several librarians, but only one head librarian.  For each librarian, store the employee id, name, address, telephone number, salary, cell phone number.  
+- A librarian may be assigned to only one branch.
+- Branches have different types of employees.  Some types are Librarian, Network Administrator,  Computer Programmer, IT Manager, Floor Manager, Custodian, Accountant, Data Analyst  Librarians must have earned a degree in library science. For each employee, the library maintains name, address, phone number, birthdate, hire date, type of employee.  For librarians, the library also maintains when the librarian earned his/her degree and the school at which the librarian earned the degree
+- The Library supports two types of PayTypes: salaried and hourly. Employees that are salaried earn a yearly salary that is paid in 12 payments on the first of each month. Employees that are clerical, earn an hourly wage.    All employees get vacation time depending on their length of service. The minimum amount of vacation time is two weeks. 
+- The library maintains a log of how many hours each clerical type of employee logged during each week that he worked. This log is used to produce paychecks for clerical staff at the end of each week. 
+- Each employee is assigned to one specific branch only.
+- The library issues library cards to people who wish to borrow books from the library.  The library keeps a list of each borrower by storing the card id, borrower name, address, phone number, birthdate, date the card was issued, balance due.   A card expires ten years from the time it is issued.
+- If a person is less than 18 years old, then the library will also keep information about the Borrower’s parent or legal guardian such as name, address, phone number. 
+- A person can have only one valid library card at a given time.  
+- A person can’t be issued a new library card, if he owes money on an expired card.
+- The Library purchases many copies of the same book. Each book copy is assigned a unique copy ID. Each book copy is found in a specific branch of the library.  
+- The Library assigns a Condition to each book copy. Sample condition values could be NEW, EXCELLENT, GOOD, WORN, POOR. Eventually copies that are in POOR condition will be discarded and replaced with new copies.
+- For each borrowed book copy, the library keeps track of the copy id and the card number of the person who borrowed it.  The library keeps track of the date on which it was borrowed and records the due date which is two weeks after the borrow date.  When the copy is returned this record is updated with the return date. 
+- When a book copy is borrowed, the copy is marked as BORROWED. When the book copy is returned the copy is marked as AVAILABLE or NOT BORROWED. 
+- A borrower can’t borrow a book from a particular branch unless that branch has a copy of that book and it is currently in stock (e.g. not being borrowed by someone else) 
+- When a borrower returns a book copy after the due date the system calculates the amount owed and any overdue charge incurred is added to the card balance 
+- A borrower cannot use a card to borrow books, if he owes more than 10 dollars on that card.
+- The library has a list of overdue charges.  The charges are currently .05 each day for juvenile books and .10 per day for adult books.  When a book is returned late the borrower pays charges that are in effect at the time the book is returned.
+- A borrower can acknowledge that he has lost a copy of a book.  If so, the copy is marked LOST and the book’s cost is added to the card balance.   Eventually the copy may be removed from the current inventory of branch copies and stored in a history file.
 
 
 
