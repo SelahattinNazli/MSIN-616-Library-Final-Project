@@ -234,13 +234,12 @@ EXEC USP_LostBook 208,5,7
 ```sql
 EXEC USP_LostBook 209,2,2
 ```
-  The stored procedured that will check if log information provide the given criterias.
-  
-     - Workers who log hours can’t log more than 40 hours per week
 
-*/
+### Stored Procedure 4
+- The stored procedured that will check if log information provide the given criterias.
+- Workers who log hours can’t log more than 40 hours per week
 
-
+```sql
 CREATE PROCEDURE Usp_LogHours
    @Employee_id AS INT,
    @Hours AS INT
@@ -281,23 +280,26 @@ BEGIN
         PRINT(ERROR_MESSAGE())
     END CATCH
 END
+```
 
+### Test Cases of Stored Procedure 4
+- If there is no book with the given information
 
---Test Cases
+```sql
+ EXEC Usp_LogHours 56,34
+```
 
+- If we want to add log information who has log more than 40 hours
 
---1) If there is no book with the given information
+```sql
+EXEC Usp_LogHours 15,43
+```
 
-        EXEC Usp_LogHours 56,34
+- If the person who wants to login provide all criterias.
 
---2) If we want to add log information who has log more than 40 hours
-
-       EXEC Usp_LogHours 15,43
-
-
---3) If the perosn who wants to login provide all criterias.
-
-      EXEC Usp_LogHours 15,23
+```sql
+EXEC Usp_LogHours 15,23
+```
 
 ## Library Queries
 
