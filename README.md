@@ -300,6 +300,70 @@ EXEC Usp_LogHours 15,43
 ```sql
 EXEC Usp_LogHours 15,23
 ```
+--The stored Procedure that will extra charge if somebody return their readings after than it's due_date.
+
+
+CREATE PROCEDURE Usp_ExtraCharge
+   @Borrower_id AS INT,
+   @copy_id AS INT,
+   @card_id AS INT,
+   @due_date AS DATE,
+   @returned_date AS DATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+	BEGIN TRY
+        BEGIN TRANSACTION
+            -- Check borrowed book exists
+            IF NOT EXISTS(SELECT TOP 1 1 FROM books_borrowed WHERE card_id = @card_id AND copy_id = @copy_id AND is_Returned = 0)
+            BEGIN
+		;THROW 50001, 'There is no borrowed book with the given details.', 1 
+		
+            END
+            DECLARE @daysElapsed INT
+			SET @daysElapsed =datediff(day, @due_date,@returned_date)
+
+            
+			DECLARE @price DECIMAL(5,2)
+
+			DECLARE @typeId INT
+            -- Check if Juvenile
+            IF(@daysElapsed > 14 AND @typeId = 4)
+                        BEGIN 
+                            SET @price = .05
+                        END 
+                    ELSE 
+                        BEGIN
+                            SET @price = .10 
+                        END
+						BEGIN
+                    --Update card balancedue 
+                    UPDATE borrowers SET balance_due = balance_due + (@price * @daysElapsed) WHERE card_id = @card_id
+					   END
+					   BEGIN
+					--Update Returned_Date
+					UPDATE Books_Borrowed SET Returned_Date = @returned_date WHERE card_id = @card_id
+                      END
+        
+            PRINT('Extra Charging Has Been Added.')
+        COMMIT TRANSACTION
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRANSACTION
+        PRINT('An Error Occured During The Transaction. Error SP: ' + ERROR_PROCEDURE() + 'Error line: ' + CAST(ERROR_LINE() AS VARCHAR))
+        PRINT(ERROR_MESSAGE())
+    END CATCH
+END
+
+
+
+--Test Cases
+--1) If there is no book with the given information
+EXEC Usp_ExtraCharge 5,204,30,'2022-05-08','2022-05-30'
+
+
+--2) If there is a book,copy_id,card_id with given information
+EXEC Usp_ExtraCharge 8,204,8,'2022-05-08', '2022-06-30'
 
 ## Library Queries
 
