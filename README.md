@@ -420,6 +420,20 @@ EXEC Usp_DiscardBook 214
 EXEC Usp_DiscardBook 205
 ```
 
+--1) Stored procedure about Each Borrower's Card Expiration Date
+
+CREATE PROCEDURE Usp_CardExpire
+AS
+  BEGIN 
+      UPDATE Borrowers
+	  SET Is_Expired = 
+	                     CASE
+						    WHEN DATEDIFF(Year, Card_Issue_Date, GETDATE())<10  THEN 1
+							WHEN DATEDIFF(Year, Card_Issue_Date, GETDATE())>=10 THEN 0
+						END
+	FROM Borrowers
+END
+
 ## Library Queries
 
 ### Query 1
