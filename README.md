@@ -117,56 +117,58 @@ ALTER TABLE employees ENABLE TRIGGER CheckEmployees
 
 ## Test Cases of the Stored Procedure 1
 
-### If we want to add a new 'head librarian' record to the branch that has already exist a 'head librarian'.
+- If we want to add a new 'head librarian' record to the branch that has already exist a 'head librarian'.
 
 ```sql
 INSERT INTO Employees 
 VALUES (67,2,2,1,1,'Alice','Meyer','Haberst Av', '1984-08-08', '2019-04-19', 50000.00, 456432589,1,'2014-06-07',542134732,'Salaried',14)
 ```
 
-### If we want to add a new 'head librarian' record that NOT the employee type is 'Librarian'. (In this example, what I try to insert type of employee is Computer Programmer)
+- If we want to add a new 'head librarian' record that NOT the employee type is 'Librarian'. (In this example, what I try to insert type of employee is Computer Programmer)
 
 ```sql
 INSERT INTO Employees 
 VALUES (67,2,2,10,3,'Alice','Meyer','Haberst Av', '1984-08-08', '2019-04-19', 50000.00, 456432589,1,'2014-06-07',542134732,'Salaried',14)
 ```
 
-### If we want to add a new record that already exist in the table
+- If we want to add a new record that already exist in the table
 
 ```sql
 INSERT INTO Employees 
 VALUES (1,1,1,1,1,'Tammy','Williams','7072 Meadow Lane', '1973-08-04', '2015-01-20', 70000.00, 963434339,0,'2012-04-09',925667082,'Salaried',14)
 ```
 
-### If we want to add a new record that been clerical employee but hourly pay is less than 15 dollars. (In this example hourly salary adjusted as 13$ per hour)
+- If we want to add a new record that been clerical employee but hourly pay is less than 15 dollars. (In this example hourly salary adjusted as 13$ per hour)
 
 ```sql
 INSERT INTO Employees 
 VALUES (67,3,8,2,1,'Tamar','Gomes','7073 Meadow Lane', '1977-08-04', '2015-01-21', 13.00, 963434367,0,'2012-05-09',925367082,'Hourly',14)
 ```
 
-### If we want to add a new record that who is librarian but salary of him/her NOT between 20000 and 70000' (In this example, the salary of librarian is 80,000$)
+- If we want to add a new record that who is librarian but salary of him/her NOT between 20000 and 70000' (In this example, the salary of librarian is 80,000$)
 
 ```sql
 INSERT INTO Employees 
 VALUES (67,2,2,10,1,'Alice','Meyer','Haberst Av', '1984-08-08', '2019-04-19', 80000.00, 456432589,1,'2014-06-07',542134732,'Salaried',14)
 ```
 
-### If we want to add a new 'librarian' record that NOT the degree of employee is 'MS degree in Library Sciences.' (In this example , what I try to insert type of employee has 'Online Education' degree)
+- If we want to add a new 'librarian' record that NOT the degree of employee is 'MS degree in Library Sciences.' (In this example , what I try to insert type of employee has 'Online Education' degree)
 
 ```sql
 INSERT INTO Employees 
 VALUES (67,3,2,10,1,'Alice','Meyer','Haberst Av', '1984-08-08', '2019-04-19', 50000.00, 456432589,1,'2014-06-07',542134732,'Salaried',14)
 ```
 
-### If we want to add a new record that matching all the criterias.
+- If we want to add a new record that matching all the criterias.
 
 ```sql
 INSERT INTO Employees 
 VALUES (67,2,2,10,1,'Alice','Meyer','Haberst Av', '1984-08-08', '2019-04-19', 60000.00, 456432589,1,'2014-06-07',542134732,'Salaried',14)
 ```
---1) Stored procedure of annual vacation time by each employee's length of service
+### Stored Procedure 2
+- Stored procedure of annual vacation time by each employee's length of service.
 
+```sql
 ALTER PROCEDURE Usp_EmployeeVacationTime
 AS
   BEGIN 
@@ -181,11 +183,8 @@ AS
 END
 
 
-----
-
-
-
-EXEC Usp_EmployeeVacationTime 
+EXEC Usp_EmployeeVacationTime
+```
 
 ## Library Queries
 
