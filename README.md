@@ -165,6 +165,27 @@ VALUES (67,3,2,10,1,'Alice','Meyer','Haberst Av', '1984-08-08', '2019-04-19', 50
 INSERT INTO Employees 
 VALUES (67,2,2,10,1,'Alice','Meyer','Haberst Av', '1984-08-08', '2019-04-19', 60000.00, 456432589,1,'2014-06-07',542134732,'Salaried',14)
 ```
+--1) Stored procedure of annual vacation time by each employee's length of service
+
+ALTER PROCEDURE Usp_EmployeeVacationTime
+AS
+  BEGIN 
+      UPDATE Employees
+	  SET Vacation_Time = 
+	                     CASE
+						    WHEN DATEDIFF(Year, HireDate, GETDATE()) BETWEEN 0 AND 10 THEN 14
+							WHEN DATEDIFF(Year, HireDate, GETDATE()) BETWEEN 11 AND 15 THEN 20
+							ELSE 30
+						END
+	FROM Employees
+END
+
+
+----
+
+
+
+EXEC Usp_EmployeeVacationTime 
 
 ## Library Queries
 
