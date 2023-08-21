@@ -250,9 +250,9 @@ Constraint [FK_CATEGBOOKS1] foreign key (Category_id) references Categories(Cate
 Constraint [FK_CATEGBOOKS2] foreign key (Book_id) references Books(Book_id)
 ```
 
-## Stored Procedures
+## Stored Procedures and Triggers
 
-### Stored Procedure 1
+### 1. Trigger 
 
 - A librarian can’t be hired before he has earned a MS in Library Science degree.
 - A new card can’t be issued for someone who owes money on an existing card
@@ -329,7 +329,7 @@ ALTER TABLE employees ENABLE TRIGGER CheckEmployees
 
 
 
-## Test Cases of the Stored Procedure 1
+## 1. Test Cases of the Trigger
 
 - If we want to add a new 'head librarian' record to the branch that has already exist a 'head librarian'.
 
@@ -380,7 +380,7 @@ INSERT INTO Employees
 VALUES (67,2,2,10,1,'Alice','Meyer','Haberst Av', '1984-08-08', '2019-04-19', 60000.00, 456432589,1,'2014-06-07',542134732,'Salaried',14)
 ```
 
-### Stored Procedure 2
+### 2. Stored Procedure
 - Rules for borrowing a book:
     - Any reading item that is categorized as reference may not be borrowed.
     - Copies that are in POOR condition may not be borrowed.
@@ -460,7 +460,7 @@ BEGIN
     END CATCH
 END
 ```
-### Test Cases of Stored Procedure 2
+### 2. Test Cases of Stored Procedure
 - If copy of type is category='Reference'
 
 ```sql
@@ -491,7 +491,7 @@ EXEC Usp_BorrowBook 212,12
 EXEC Usp_BorrowBook 214,14
 ```
 
-### Stored Procedure 3
+### 3. Stored Procedure
 - Stored procedure of annual vacation time by each employee's length of service.
 
 ```sql
@@ -511,7 +511,7 @@ END
 
 EXEC Usp_EmployeeVacationTime
 ```
-### Stored Procedure 4
+### 4. Stored Procedure
 - The Stored Procedure that about what will happen when a book get lost.
 
 ```sql
@@ -547,7 +547,7 @@ BEGIN
     END CATCH
 END
 ```
-### Test Conditions of Stored Procedure 4
+### 4. Test Conditions of Stored Procedure 
 
 - If there is no book under that conditions, the procedure will throw exception
 
@@ -561,7 +561,7 @@ EXEC USP_LostBook 208,5,7
 EXEC USP_LostBook 209,2,2
 ```
 
-### Stored Procedure 5
+### 5. Stored Procedure
 - The stored procedured that will check if log information provide the given criterias.
 - Workers who log hours can’t log more than 40 hours per week
 
@@ -608,7 +608,7 @@ BEGIN
 END
 ```
 
-### Test Cases of Stored Procedure 5
+### 5. Test Cases of Stored Procedure 
 - If there is no book with the given information
 
 ```sql
@@ -627,7 +627,7 @@ EXEC Usp_LogHours 15,43
 EXEC Usp_LogHours 15,23
 ```
 
-### Stored Procedure 6
+### 6. Stored Procedure 
 - The stored Procedure that will extra charge if somebody return their readings after than it's due_date.
 
 ```sql
@@ -684,7 +684,7 @@ BEGIN
 END
 ```
 
-### Test Cases of Stored Procedure 6
+### 6. Test Cases of Stored Procedure 
 - If there is no book with the given information
 
 ```sql
@@ -696,7 +696,7 @@ EXEC Usp_ExtraCharge 5,204,30,'2022-05-08','2022-05-30'
 EXEC Usp_ExtraCharge 8,204,8,'2022-05-08', '2022-06-30'
 ```
 
-### Stored Procedure 7
+### 7. Stored Procedure 
 - The Stored Procedure for Discarding Book in Poor Condition
 
 ```sql
@@ -727,7 +727,7 @@ BEGIN
 END
 ```
 
-### Test Cases of Stored Procedure 7
+### 7. Test Cases of Stored Procedure 
 - If the copy_id that has been looked for does not exist in the BookCopies table
 
 ```sql
@@ -746,7 +746,7 @@ EXEC Usp_DiscardBook 214
 EXEC Usp_DiscardBook 205
 ```
 
-### Stored Procedure 8
+### 8. Stored Procedure 
 - Stored procedure about Each Borrower's Card Expiration Date
 
 ```sql
@@ -763,7 +763,7 @@ AS
 END
 ```
 
-### Stored Procedure 9
+### 9. Stored Procedure 
 - Rules for creating a card for borrower
     - A person can have only one valid library card at a given time.
     - A person can’t be issued a new library card, if he owes money on an expired card.
@@ -805,7 +805,7 @@ END
 ```
 
 
-### Test Cases of Stored Procedure 9
+### 9. Test Cases of Stored Procedure 
 - If the person who wants to borrow book has already active card.
 
 ```sql
