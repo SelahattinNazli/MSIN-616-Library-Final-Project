@@ -430,9 +430,9 @@ AS
       UPDATE Borrowers
 	  SET Is_Expired = 
 	                     CASE
-						    WHEN DATEDIFF(Year, Card_Issue_Date, GETDATE())<10  THEN 1
-							WHEN DATEDIFF(Year, Card_Issue_Date, GETDATE())>=10 THEN 0
-						END
+                              WHEN DATEDIFF(Year, Card_Issue_Date, GETDATE())<10  THEN 1
+                              WHEN DATEDIFF(Year, Card_Issue_Date, GETDATE())>=10 THEN 0
+                              END
 	FROM Borrowers
 END
 ```
