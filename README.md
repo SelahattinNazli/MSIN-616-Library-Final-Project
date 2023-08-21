@@ -4,6 +4,8 @@
 
 This is a simple database that can be used to maintain the data stored and processed by a lending library. In this database, it is aimed to create a real data library database with all its features.
 
+<img width="1512" alt="Screenshot 2023-08-21 at 3 10 48 AM" src="https://github.com/SelahattinNazli/MSIN-616-Library-Final-Project/assets/129943133/d6b7059e-156a-4b8e-a266-e8fce48d8c9c">
+
 
 ## Descriptive Information About Database	
 - The library categorizes the books it has.  Typical categories might be: fiction, historical fiction, mystery, science fiction, juvenile, reference, adult.  A book might have more than one category. For example, it might be juvenile and fiction.
