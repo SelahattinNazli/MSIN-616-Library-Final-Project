@@ -369,9 +369,11 @@ EXEC Usp_ExtraCharge 5,204,30,'2022-05-08','2022-05-30'
 ```sql
 EXEC Usp_ExtraCharge 8,204,8,'2022-05-08', '2022-06-30'
 ```
---The Stored Procedure for Discarding Book in Poor Condition
 
+### Stored Procedure 6
+- The Stored Procedure for Discarding Book in Poor Condition
 
+```sql
 CREATE PROCEDURE Usp_DiscardBook
     @copy_id INT
 AS 
@@ -397,23 +399,26 @@ BEGIN
 
     UPDATE bookcopies SET Is_Available = 0, Is_Active = 0, condition = 'POOR' WHERE copy_id = @copy_id  
 END
+```
 
+### Test Cases of Stored Procedure 6
+- If the copy_id that has been looked for does not exist in the BookCopies table
 
-
---Test Cases
-
---1) If the copy_id that has been looked for does not exist in the BookCopies table
-
+```sql
 EXEC Usp_DiscardBook 250
+```
 
---2) If the copy_id that has been looked for exist but it hasn't returned yet.
+- If the copy_id that has been looked for exist but it hasn't returned yet.
 
+```sql
 EXEC Usp_DiscardBook 214
+```
 
---3) If the copy_id that has been looked for exist but it hasn't discarded yet.
+- If the copy_id that has been looked for exist but it hasn't discarded yet.
 
+```sql
 EXEC Usp_DiscardBook 205
-
+```
 
 ## Library Queries
 
